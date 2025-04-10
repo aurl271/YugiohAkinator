@@ -1,5 +1,4 @@
 from flask import Flask,render_template,Blueprint,request
-from . import models
 
 app = Blueprint('app', __name__)
 
