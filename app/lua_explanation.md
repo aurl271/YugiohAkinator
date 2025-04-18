@@ -2,6 +2,8 @@
 https://w.atwiki.jp/yamiorica/pages/635.html
 - function c~~.initial_effect()で効果の宣言
 - Effect.CreateEffect()で効果の作成
+- RegisterEffect()は効果のセット
+- GetHandler()はカードオブジェクトの取得?
 # set～～関数
 - SetDescription(aux.Stringid(id,0))でテキストのセット(第2引数が謎？)
 - SetType()で誘発効果等の設定(https://w.atwiki.jp/yamiorica/pages/301.html)
@@ -15,6 +17,3 @@ https://w.atwiki.jp/yamiorica/pages/635.html
 - SetCondition()は~~発動条件~~適用条件の設定
 - SetTarget()は対象の設定
 - SetReset()は効果のリセットタイミング(エンドフェイズ等)の設定(https://w.atwiki.jp/yamiorica/?cmd=word&word=RESET_PHASE&pageid=300)
-- RegisterEffect()は効果のセット
-- GetHandler()はカードオブジェクトの取得?
-- 

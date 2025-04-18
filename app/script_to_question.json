@@ -1,3 +1,4 @@
 {
-    
+    "SetCategory(.*CATEGORY_DESTROY.*)":"破壊する効果を含む？",
+    "SetCategory(.*CATEGORY_RELEASE.*)":"リリースする効果を含む？"
 }
