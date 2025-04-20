@@ -1,4 +1,63 @@
 {
-    "SetCategory(.*CATEGORY_DESTROY.*)":"破壊する効果を含む？",
-    "SetCategory(.*CATEGORY_RELEASE.*)":"リリースする効果を含む？"
+    "破壊する効果を持つ?": "SetCategory(.*CATEGORY_DESTROY.*)",
+    "リリースする効果を持つ?": "SetCategory(.*CATEGORY_RELEASE.*)",
+    "墓地に送る効果を持つ?": "SetCategory(.*CATEGORY_REMOVE.*)",
+    "デッキから墓地に送る効果を持つ?": "SetCategory(.*CATEGORY_DECKDES.*)",
+    "手札破壊をする効果を持つ?": "SetCategory(.*CATEGORY_HANDES.*)",
+    "召喚を行う効果を持つ?": "SetCategory(.*CATEGORY_SUMMON.*)",
+    "特殊召喚を含む効果を持つ?": "SetCategory(.*CATEGORY_SPECIAL_SUMMON.*)",
+    "トークンを生成する効果を持つ?": "SetCategory(.*CATEGORY_TOKEN.*)",
+    "リバース効果を持つ?": 
+        [
+            "SetCategory(.*CATEGORY_FLIP.*)",
+            "SetType(.*EFFECT_TYPE_FLIP.*)"
+        ],
+    "表示形式を変更する効果を持つ?": "SetCategory(.*CATEGORY_POSITION.*)",
+    "コントロールを変更する効果を持つ?": 
+        [
+            "SetCategory(.*CATEGORY_CONTROL.*)",
+            "SetCode(.*EFFECT_SET_CONTROL.*)"
+        ],
+    "効果を無効にする効果を持つ?(発動無効ではない)": 
+        [
+            "SetCategory(.*CATEGORY_DISABLE.*)",
+            "SetCode(.*EFFECT_DISABLE.*)"
+        ],
+    "召喚を無効にする効果を持つ?": "SetCategory(.*CATEGORY_DISABLE_SUMMON.*)",
+    "ドローする効果を持つ?": "SetCategory(.*CATEGORY_DRAW.*)",
+    "カードをサーチするを持つ?": "SetCategory(.*CATEGORY_SEARCH.*)",
+    "カードを装備する・装備させる効果を持つ?": "SetCategory(.*CATEGORY_EQUIP.*)",
+    "ダメージを与える効果を持つ?": "SetCategory(.*CATEGORY_DAMAGE.*)",
+    "回復する効果を持つ?": "SetCategory(.*CATEGORY_RECOVER.*)",
+    "攻撃力を変化する効果を持つ?": "SetCategory(.*CATEGORY_ATKCHANGE.*)",
+    "守備力を変化する効果を持つ?": "SetCategory(.*CATEGORY_DEFCHANGE.*)",
+    "カウンターに関する効果を持つ?": "SetCategory(.*CATEGORY_COUNTER.*)",
+    "コイントスを行う効果を持つ?": "SetCategory(.*CATEGORY_COIN.*)",
+    "ダイスを振る効果を持つ?": "SetCategory(.*CATEGORY_DICE.*)",
+    "レベルを変更する効果を持つ?": "SetCategory(.*CATEGORY_LVCHANGE.*)",
+    "カード・効果の発動を無効にする効果を持つ?(効果無効ではない)": "SetCategory(.*CATEGORY_NEGATE.*)",
+    "融合召喚する効果を持つ":"SetCategory(.*CATEGORY_FUSION_SUMMON.*)",
+    "起動効果を持つ?":"SetType(.*EFFECT_TYPE_IGNITION.*)",
+    "任意の誘発効果を持つ?(強制の効果ではない)":"SetType(.*EFFECT_TYPE_TRIGGER_O.*)",
+    "任意の誘発即時効果を持つ?(強制の効果ではない)":"SetType(.*EFFECT_TYPE_QUICK_O.*)",
+    "強制の誘発効果を持つ?":"SetType(.*EFFECT_TYPE_TRIGGER_F.*)",
+    "強制の誘発即時効果を持つ?":"SetType(.*EFFECT_TYPE_QUICK_F.*)",
+    "効果を受けない効果を持つ？":"SetCode(.*EFFECT_IMMUNE_EFFECT.*)",
+    "効果が無効化されない？":"SetCode(.*EFFECT_CANNOT_DISABLE.*)",
+    "コントロールを変更できない効果を持つ？":"SetCode(.*EFFECT_CANNOT_CHANGE_CONTROL.*)",
+    "効果を発動できなくする効果（プレイヤーが）を持つ?(マジックキャンセラー等)":"SetCode(.*EFFECT_CANNOT_ACTIVATE.*)",
+    "効果を発動できなくする効果を持つ?(トリックスター・ライトステージ等)":"SetCode(.*EFFECT_CANNOT_TRIGGER.*)",
+    "効果の発動を無効にされない効果に関連する？":"SetCode(.*EFFECT_CANNOT_INACTIVATE.*)",
+    "効果を無効化されない効果に関連する？":"SetCode(.*EFFECT_CANNOT_DISEFFECT.*)",
+    "表示形式を変更できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_CHANGE_POSITION.*)",
+    "罠カードを手札から発動できるような効果に関連する(無限泡影、処刑人－マキュラ等)？":"SetCode(.*EFFECT_TRAP_ACT_IN_HAND.*)",
+    "罠カードをセットしたターンに発動できる効果に関連する？":"SetCode(.*EFFECT_TRAP_ACT_IN_SET_TURN.*)",
+    "モンスターを魔法罠ゾーンにセットする効果を持つ？":"SetCode(.*EFFECT_MONSTER_SSET.*)",
+    "モンスターを召喚できなくなる効果に関連する？(ラヴァゴーレム等)":"SetCode(.*EFFECT_CANNOT_SUMMON.*)",
+    "モンスターを反転召喚できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_FLIP_SUMMON.*)",
+    "モンスターを特殊召喚できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_SPECIAL_SUMMON.*)",
+    "モンスターをセットできなくなる効果に関連する？(アンデットワールド等のアドバンス召喚によるセットができなくなる場合も含む)":"SetCode(.*EFFECT_CANNOT_MSET.*)",
+    "魔法・罠をセットできなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_SSET.*)",
+    "ドローできなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_DRAW.*)",
+    "召喚を無効にされなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_DISABLE_SUMMON.*)"
 }
