@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+    <h1>アキネーター</h1>
+    <p>質問</p>
+    {% if question == None %}
+        <p>None</p>
+    {% else %}
+        <p>{{question}}</p>
+    {% endif %}
+    <form action="/" method = "POST">
+        <button type="submit" name="answer" value="yes">はい</button>
+        <button type="submit" name="answer" value="probably">たぶんそう</button>
+        <button type="submit" name="answer" value="probably_no">たぶん違う</button>
+        <button type="submit" name="answer" value="no">いいえ</button>
+        <button type="submit" name="answer" value="dont_know">分からない</button>
+    </form>
+    </body>
+</html>
