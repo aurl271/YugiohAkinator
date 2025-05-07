@@ -1,156 +1,24 @@
-{
-    "破壊する効果を持つ?": [
-        "SetCategory(.*CATEGORY_DESTROY.*)",
-        "Duel.Destroy"
-    ],
-    "リリースする効果を持つ?(召喚条件によるリリース等も含む)": [
-        "SetCategory(.*CATEGORY_RELEASE.*)",
-        "Duel.Release"
-    ],
-    "墓地に送る効果を持つ?": "SetCategory(.*CATEGORY_REMOVE.*)",
-    "デッキから墓地に送る効果を持つ?": "SetCategory(.*CATEGORY_DECKDES.*)",
-    "手札破壊をする効果を持つ?": "SetCategory(.*CATEGORY_HANDES.*)",
-    "召喚を行う効果を持つ?": "SetCategory(.*CATEGORY_SUMMON.*)",
-    "特殊召喚を含む効果を持つ?": "SetCategory(.*CATEGORY_SPECIAL_SUMMON.*)",
-    "トークンを生成する効果を持つ?": "SetCategory(.*CATEGORY_TOKEN.*)",
-    "リバース効果を持つ?": 
-        [
-            "SetCategory(.*CATEGORY_FLIP.*)",
-            "SetType(.*EFFECT_TYPE_FLIP.*)"
-        ],
-    "表示形式を変更する効果を持つ?": "SetCategory(.*CATEGORY_POSITION.*)",
-    "コントロールを変更する効果を持つ?": 
-        [
-            "SetCategory(.*CATEGORY_CONTROL.*)",
-            "SetCode(.*EFFECT_SET_CONTROL.*)"
-        ],
-    "効果を無効にする効果(効果を無効にして特殊召喚等も含む)を持つ?(発動無効ではない)": 
-        [
-            "SetCategory(.*CATEGORY_DISABLE.*)",
-            "SetCode(.*EFFECT_DISABLE(!?)",
-            "SetCode(.*EFFECT_DISABLE_EFFECT.*)",
-            "SetCode(.*EVENT_CHAIN_SOLVING.*)"
-        ],
-    "召喚を無効にする効果を持つ?": "SetCategory(.*CATEGORY_DISABLE_SUMMON.*)",
-    "ドローする効果を持つ?": "SetCategory(.*CATEGORY_DRAW.*)",
-    "カードをサーチするを持つ?": "SetCategory(.*CATEGORY_SEARCH.*)",
-    "カードを装備する・装備させる効果を持つ?": "SetCategory(.*CATEGORY_EQUIP.*)",
-    "ダメージを与える効果を持つ?": "SetCategory(.*CATEGORY_DAMAGE.*)",
-    "回復する効果を持つ?": "SetCategory(.*CATEGORY_RECOVER.*)",
-    "攻撃力を変化する効果を持つ?": "SetCategory(.*CATEGORY_ATKCHANGE.*)",
-    "守備力を変化する効果を持つ?": "SetCategory(.*CATEGORY_DEFCHANGE.*)",
-    "カウンターに関する効果を持つ?": "SetCategory(.*CATEGORY_COUNTER.*)",
-    "コイントスを行う効果を持つ?": "SetCategory(.*CATEGORY_COIN.*)",
-    "ダイスを振る効果を持つ?": "SetCategory(.*CATEGORY_DICE.*)",
-    "レベルを変更する効果を持つ?": "SetCategory(.*CATEGORY_LVCHANGE.*)",
-    "カード・効果の発動を無効にする効果を持つ?(効果無効ではない)": "SetCategory(.*CATEGORY_NEGATE.*)",
-    "融合召喚する効果を持つ":"SetCategory(.*CATEGORY_FUSION_SUMMON.*)",
-    "起動効果を持つ?":"SetType(.*EFFECT_TYPE_IGNITION.*)",
-    "任意の誘発効果を持つ?(強制の効果ではない)":"SetType(.*EFFECT_TYPE_TRIGGER_O.*)",
-    "任意の誘発即時効果を持つ?(強制の効果ではない)":"SetType(.*EFFECT_TYPE_QUICK_O.*)",
-    "強制の誘発効果を持つ?":"SetType(.*EFFECT_TYPE_TRIGGER_F.*)",
-    "強制の誘発即時効果を持つ?":"SetType(.*EFFECT_TYPE_QUICK_F.*)",
-    "効果を受けない効果を持つ？":"SetCode(.*EFFECT_IMMUNE_EFFECT.*)",
-    "効果が無効化されなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_DISABLE.*)",
-    "コントロールを変更できない効果を持つ？":"SetCode(.*EFFECT_CANNOT_CHANGE_CONTROL.*)",
-    "効果を発動できなくする効果（プレイヤーが）を持つ?(マジックキャンセラー等)":"SetCode(.*EFFECT_CANNOT_ACTIVATE.*)",
-    "効果を発動できなくする効果を持つ?(トリックスター・ライトステージ等)":"SetCode(.*EFFECT_CANNOT_TRIGGER.*)",
-    "効果の発動を無効にされない効果に関連する？":"SetCode(.*EFFECT_CANNOT_INACTIVATE.*)",
-    "効果を無効化されない効果に関連する？":"SetCode(.*EFFECT_CANNOT_DISEFFECT.*)",
-    "表示形式を変更できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_CHANGE_POSITION.*)",
-    "罠カードを手札から発動できるような効果に関連する(無限泡影、処刑人－マキュラ等)？":"SetCode(.*EFFECT_TRAP_ACT_IN_HAND.*)",
-    "罠カードをセットしたターンに発動できる効果に関連する？":"SetCode(.*EFFECT_TRAP_ACT_IN_SET_TURN.*)",
-    "モンスターを魔法罠ゾーンにセットする効果を持つ？":"SetCode(.*EFFECT_MONSTER_SSET.*)",
-    "モンスターを召喚できなくなる効果に関連する？(ラヴァゴーレム等)":"SetCode(.*EFFECT_CANNOT_SUMMON.*)",
-    "モンスターを反転召喚できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_FLIP_SUMMON.*)",
-    "モンスターを特殊召喚できなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_SPECIAL_SUMMON.*)",
-    "モンスターをセットできなくなる効果に関連する？(アンデットワールド等のアドバンス召喚によるセットができなくなる場合も含む)":"SetCode(.*EFFECT_CANNOT_MSET.*)",
-    "魔法・罠をセットできなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_SSET.*)",
-    "ドローできなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_DRAW.*)",
-    "召喚を無効にされなくなる効果に関連する？":"SetCode(.*EFFECT_CANNOT_DISABLE_SUMMON.*)",
-    "破壊されたとき(自身以外も含む)に発動できる効果を持つ？":"SetCode(.*EVENT_DESTROYED.*)",
-    "フリーチェーンで発動できる効果を持つ？":"SetCode(.*EVENT_FREE_CHAIN.*)",
-    "カードが墓地に送られた、捨てられたとき(自身以外も含む)に発動できる効果を持つ？":"SetCode(.*EVENT_TO_GRAVE.*)",
-    "フィールドからカードが離れたとき(自身以外も含む)に発動できる効果を持つ？":"SetCode(.*EVENT_LEAVE_FIELD.*)",
-    "特殊召喚をするのに特殊な条件(普通の融合等は除く)がある？(例:他にカードがある場合特殊召喚できない、～した場合にのみ特殊召喚できる)":"SetCode(.*EFFECT_SPSUMMON_CONDITION.*)",
-    "特殊召喚をするのに特殊な手続きを持つ？(例:墓地から特定のカードを除外して特殊召喚できる)":"SetCode(.*EFFECT_SPSUMMON_PROC.*)",
-    "召喚をするのに特殊な手続きを持つ？(例:リリースなしで召喚できる)":"SetCode(.*EFFECT_SUMMON_PROC.*)",
-    "種族を変更する効果を持つ？":"SetCode(.*EFFECT_CHANGE_RACE.*)",
-    "属性を変更する効果を持つ？":"SetCode(.*EFFECT_CHANGE_ATTRIBUTE.*)",
-    "戦闘ダメージを変更する効果を持つ？(例:戦闘ダメージを半分にする)":"SetCode(.*EFFECT_CHANGE_BATTLE_DAMAGE.*)",
-    "カード、効果の発動にチェーンして発動できる効果を持つ？またはカード、効果の発動にチェーンして発動できなくなる効果を持つ？(閃刀機関マルチロール等)":"SetCode(.*EVENT_CHAINING.*)",
-    "表示形式が変更されたとき(リバース効果は含まない)に発動できる効果を持つ？(例外:古代の進撃も含む)":"SetCode(.*EVENT_CHANGE_POS.*)",
-    "カードが手札に加わったら発動できる効果を持つ？(例外:小人のいたずらも含む)":"SetCode(.*EVENT_TO_HAND.*)",    
-    "攻撃宣言時に発動できる効果を持つ？":"SetCode(.*EVENT_ATTACK_ANNOUNCE.*)",    
-    "破壊される代わりに何かを行う効果を持つ？":"SetCode(.*EFFECT_DESTROY_REPLACE.*)",    
-    "スタンバイフェイズに発動する効果を持つ？":"SetCode(.*PHASE_STANDBY.*)",    
-    "攻撃力を特定の数値に変更する効果を持つ？(攻撃力を上げる、下げる効果は除く)":"SetCode(.*EFFECT_SET_ATTACK(?!_)",    
-    "守備力を特定の数値に変更する効果を持つ？(守備力を上げる、下げる効果は除く)":"SetCode(.*EFFECT_SET_DEFENSE(?!_)",    
-    "攻撃力を上げるまたは下げる効果を持つ？(攻撃力を特定の数値に変更する効果は除く)":"SetCode(.*EFFECT_UPDATE_ATTACK.*)",
-    "守備力を上げるまたは下げる効果を持つ？(守備力を特定の数値に変更する効果は除く)":"SetCode(.*EFFECT_UPDATE_DEFENSE.*)",
-    "エンドフェイズに発動する効果を持つ？":"SetCode(.*PHASE_END.*)",
-    "効果で破壊されなくなる効果を持つ？(1ターンに1度だけ破壊されない等は除く)":"SetCode(.*EFFECT_INDESTRUCTABLE_EFFECT.*)",
-    "戦闘で破壊されなくなる効果を持つ？(1ターンに1度だけ破壊されない等は除く)":"SetCode(.*EFFECT_INDESTRUCTABLE_BATTLE.*)",    
-    "ダメージステップ計算前に発動できる効果を持つ？":"SetCode(.*EVENT_BATTLE_CONFIRM.*)",    
-    "戦闘で破壊されたら発動できる効果を持つ？":"SetCode(.*EVENT_BATTLE_DESTROYED.*)",
-    "リンク素材にできなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_BE_LINK_MATERIAL.*)",
-    "レベルを上げる、下げるさせる効果を持つ？(特定のレベルにする効果は除く)":"SetCode(.*EFFECT_UPDATE_LEVEL.*)",
-    "レベルを特定の値にする効果を持つ？(レベルを上げる、下げるさせる効果は除く)":"SetCode(.*EFFECT_CHANGE_LEVEL.*)",
-    "直接攻撃できるようになる効果を持つ？":"SetCode(.*EFFECT_DIRECT_ATTACK.*)",
-    "特殊召喚したタイミングで発動できる効果を持つ？または特殊召喚をしたことで追加効果(例：エクソシスターリタニア等)を得る効果を持つ？":"SetCode(.*EVENT_SPSUMMON_SUCCESS.*)",
-    "戦闘でモンスターを破壊されることで発動する効果を持つ？":"SetCode(.*EVENT_BATTLE_DESTROYING.*)",
-    "ドローフェイズをスキップする効果を持つ？":"SetCode(.*EFFECT_SKIP_DP.*)",
-    "バトルフェイズ開始時に発動する効果を持つ？":"SetCode(.*PHASE_BATTLE_START.*)",    
-    "攻撃できなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_ATTACK.*)",
-    "カードを装備するまたはカードに装備する効果を持つ？":"SetCode(.*EFFECT_EQUIP_LIMIT.*)",
-    "召喚したタイミングで発動できる効果を持つ？":"SetCode(.*EVENT_SUMMON_SUCCESS.*)",
-    "反転召喚したタイミングで発動できる効果を持つ？":"SetCode(.*EVENT_FLIP_SUMMON_SUCCESS.*)",
-    "対象にならなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_BE_EFFECT_TARGET.*)",
-    "攻撃対象にならなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_SELECT_BATTLE_TARGET.*)",
-    "素材を参照する効果(召命の神弓ーアポロウーサ等、束ねられし力)を持つ？(例外:ライフ・ストリーム・ドラゴン,双天将 密迹,貴竜の魔術師も含む)":"SetCode(.*EFFECT_MATERIAL_CHECK.*)",
-    "戦闘で破壊されなくなる効果(回数制限有)を持つ？":"SetCode(.*EFFECT_MATERIAL_CHECK.*)",
-    "フィールドから離れたときに特定の場所に行く効果を持つ？（例:フィールドから離れた場合に除外される等）":"SetCode(.*EFFECT_LEAVE_FIELD_REDIRECT.*)",
-    "シンクロ素材にできなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_BE_SYNCHRO_MATERIAL.*)",
-    "ドローした場合に発動する効果を持つ？":"SetCode(.*EVENT_DRAW.*)",
-    "ダメージステップ開始前に発動できる効果を持つ？":"SetCode(.*EVENT_BATTLE_START.*)",
-    "デッキ、EXデッキにカードを戻せなくなる効果を持つ？(例:G・B・ハンター、フェイバリット・コンタクト等)":"SetCode(.*EFFECT_CANNOT_TO_DECK.*)",
-    "守備貫通効果を持つ？":"SetCode(.*EFFECT_PIERCE.*)",
-    "効果を付与する効果を持つ？":"SetCode(.*EFFECT_ADD_TYPE.*)",
-    "戦闘ダメージを受けた場合に発動できる効果を持つ？":"SetCode(.*EVENT_BATTLE_DAMAGE.*)",
-    "アドバンス召喚のためにリリースできない効果を持つ？":"SetCode(.*EFFECT_UNRELEASABLE_SUM.*)",
-    "リリースできない効果を持つ？":"SetCode(.*EFFECT_UNRELEASABLE_NONSUM.*)",
-    "手札を捨てることによって発動する効果の発動ができなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_DISCARD_HAND.*)",
-    "アドバンス召喚の際に2体分のリリースとして扱うことができる効果を持つ？":"SetCode(.*EFFECT_DOUBLE_TRIBUTE.*)",
-    "自壊する効果を持つ？(例外:古代の機械工兵)":"SetCode(.*EFFECT_SELF_DESTROY.*)",
-    "攻撃宣言ができなくなる効果を持つ？":"SetCode(.*EFFECT_CANNOT_ATTACK_ANNOUNCE.*)",
-    "デッキからカードを手札に加えられなくなる効果を持つ？(ドロール&ロックンバード)":"SetCode(.*EFFECT_CANNOT_TO_HAND.*)",
-    "スピリットモンスターが手札に戻らなくともよくなる効果を持つ？":"SetCode(.*EFFECT_SPIRIT_MAYNOT_RETURN.*)",
-    "蘇生制限を持つ？":"EnableReviveLimit()",
-    "タイミングを逃さない効果を持つ？":"SetProperty(.*EFFECT_FLAG_DELAY.*)",
-    "特殊召喚を無効にされなくなる効果に関連する？(召喚を除く)":"SetCode(.*EFFECT_CANNOT_DISABLE_SPSUMMON.*)",
-    "召喚権を増やす？(二重召喚のようなタイプでジェムナイトセラフィのようなタイプではない)":"SetCode(.*EFFECT_SET_SUMMON_COUNT_LIMIT.*)",
-    "特殊な召喚権(アドバンス召喚だけの場合は除く)を増やす？(ジェムナイトセラフィのようなタイプで二重召喚のようなタイプではない)":"SetCode(.*EFFECT_EXTRA_SUMMON_COUNT.*)",
-    "アドバンス召喚の召喚権を追加する効果を持つ?":
-    [
-        "SetCode(.*EFFECT_EXTRA_SUMMON_COUNT.*)",
-        "SetCode(.*EFFECT_EXTRA_SET_COUNT.*)"
-    ]
-}
+ビット位置  意味
+0           モンスター
+1           魔法
+2           罠
+3           通常モンスター,効果モンスター
 
-    "アドバンス召喚の召喚権を追加する効果を持つ?":
-    [
-        "SetCode(.*EFFECT_EXTRA_SUMMON_COUNT.*)",
-        "SetCode(.*EFFECT_EXTRA_SET_COUNT.*)"
-    ]
-        "コントロールを変更する効果を持つ?": 
-        [
-            "SetCategory(.*CATEGORY_CONTROL.*)",
-            "SetCode(.*EFFECT_SET_CONTROL.*)"
-        ],
-    "効果を無効にする効果(効果を無効にして特殊召喚等も含む)を持つ?(発動無効ではない)": 
-        [
-            "SetCategory(.*CATEGORY_DISABLE.*)",
-            "SetCode(.*EFFECT_DISABLE(!?)",
-            "SetCode(.*EFFECT_DISABLE_EFFECT.*)",
-            "SetCode(.*EVENT_CHAIN_SOLVING.*)"
-        ],
+4           融合,儀式,シンクロ,エクシーズ,メインデッキに入っている特殊召喚モンスター,
+5           リンクモンスター
+6           通常魔法,速攻魔法,永続魔法,装備魔法,フィールド魔法,
+7           通常罠,永続罠,カウンター罠
+
+8           攻撃力の範囲
+9           攻撃力
+10          守備力の範囲
+11          守備力
+
+12          レベル、ランク、リンクマーカーの数
+13          ペンデュラム
+14          スケール
+15          種族
+
+16          属性
+17          読みの開始
+18          読みの終わり

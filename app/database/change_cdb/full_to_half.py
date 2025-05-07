@@ -24,15 +24,15 @@ def full_to_half(db_path, text_table):
     cursor = conn.cursor()
 
     #id,name,descの取り出す
-    cursor.execute("SELECT id,name,desc FROM {text_table}")
-    for id, name, desc in cursor.fetchall():
+    cursor.execute(f"SELECT id,name FROM {text_table}")
+    for id, name in cursor.fetchall():
         #カタカナ以外を半角にして上書き
         name = convert_except_katakana(name)
-        desc = convert_except_katakana(desc)
-        cursor.execute("UPDATE {text_table} SET name = ?,desc = ? WHERE id = ?;",(name,desc,id))
+        cursor.execute(f"UPDATE {text_table} SET name = ? WHERE id = ?;",(name,id))
 
     #保存して終了
     conn.commit()
+    cursor.close()
     conn.close()
     
 #データべースへのパス

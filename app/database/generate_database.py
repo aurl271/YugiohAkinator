@@ -8,7 +8,6 @@ cardsテーブル
     name TEXT NOT NULL  -- カード名
     reading TEXT -- カードの読み方
     desc TEXT NOT NULL -- テキスト
-    alias INTEGER NOT NULL -- 同名カード
     setcode INTEGER NOT NULL -- テーマ指定
     type INTEGER NOT NULL -- カード種類
     atk INTEGER NOT NULL -- 攻撃力
@@ -22,6 +21,8 @@ questionsテーブル
     text TEXT NOT NULL UNIQUE,   -- 質問文
     category INTEGER NOT NULL   -- scriptかcardsテーブルからなのか
     query TEXT --  cardsテーブルから回答を判断するためのクエリ(scriptから判断する場合はNULL)
+    unset_bit INTEGER NOT NULL DEFAULT 0,   -- ビットが立っていればこの質問はしない
+    new_state INTEGER NOT NULL DEFAULT 0    -- 新しい状態にするためのビット
     
 answersテーブル
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,6 +57,9 @@ class AnswerValue(Enum):
     #回答がYES,NOのときの値
     YES = 1
     NO = -1
+    PROBABLY = 0.5
+    PROBABLY_NO = -0.5
+    UNKNOWN = 0
 
 
 #データベースの名前
@@ -121,6 +125,7 @@ class CardDb:
                     card_id INTEGER NOT NULL UNIQUE,
                     name TEXT NOT NULL,
                     reading TEXT,
+                    desc TEXT,
                     setcode INTEGER NOT NULL,
                     type INTEGER NOT NULL,
                     atk INTEGER NOT NULL,
@@ -135,7 +140,9 @@ class CardDb:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     question_text TEXT NOT NULL UNIQUE,
                     category INTEGER CHECK(category IN ({QuestionCategory.SCRIPT.value}, {QuestionCategory.CARDS.value})) NOT NULL,
-                    query TEXT
+                    query TEXT,
+                    unset_bit INTEGER NOT NULL DEFAULT 0,
+                    new_state INTEGER NOT NULL DEFAULT 0
                 )
             """)
             self.cursor.execute(f"""
@@ -155,14 +162,14 @@ class CardDb:
             self.conn.rollback()
             print(f"データベース生成時にエラーが発生しました: {e}")
 
-    def add_card(self,card_id,card_name,card_reading,card_setcode,card_type,card_atk,card_def,card_level,card_race,card_attribute):
+    def add_card(self,card_id,card_name,card_reading,card_desc,card_setcode,card_type,card_atk,card_def,card_level,card_race,card_attribute):
         try:
             #cardsテーブルにカードの追加、answersテーブルにカード、質問、回答を追加
             self.cursor.execute("SELECT 1 FROM cards WHERE card_id = ?;", (card_id,))
             result = self.cursor.fetchone()
             if not result:
                 #cardsテーブルになければ追加
-                self.cursor.execute("INSERT INTO cards (card_id,name,reading,setcode,type,atk,def,level,race,attribute) VALUES (?,?,?,?,?,?,?,?,?,?);", (card_id,card_name,card_reading,card_setcode,card_type,card_atk,card_def,card_level,card_race,card_attribute))        
+                self.cursor.execute("INSERT INTO cards (card_id,name,reading,desc,setcode,type,atk,def,level,race,attribute) VALUES (?,?,?,?,?,?,?,?,?,?,?);", (card_id,card_name,card_reading,card_desc,card_setcode,card_type,card_atk,card_def,card_level,card_race,card_attribute))        
             
             for question_id,question_text in self.get_all_question_script():
                 #questionsテーブルからquestionを取り出し、answersテーブルにカード、質問、回答を追加
@@ -180,14 +187,14 @@ class CardDb:
             print(f"カード追加時にエラーが発生しました: {e}")
             print(card_id,card_name)
             
-    def add_question(self,question_text,category,query = None):
+    def add_question(self,question_text,category,query = None,unset_bit = 0,new_state = 0):
         try:
             #cardsテーブルにカードの追加、answersテーブルにカード、質問、回答を追加
             self.cursor.execute("SELECT 1 FROM questions WHERE question_text = ?;", (question_text,))
             result = self.cursor.fetchone()
             if not result:
                 #questionsテーブルになければ追加
-                self.cursor.execute("INSERT INTO questions (question_text,category,query) VALUES (?,?,?);", (question_text,category,query))        
+                self.cursor.execute("INSERT INTO questions (question_text,category,query,unset_bit,new_state) VALUES (?,?,?,?,?);", (question_text,category,query,unset_bit,new_state))        
             
             self.cursor.execute("SELECT id FROM questions WHERE question_text = ?;", (question_text,))
             result = self.cursor.fetchone()
@@ -212,7 +219,7 @@ class CardDb:
             #エラー発生時はロールバック
             self.conn.rollback()
             print(f"質問追加時にエラーが発生しました: {e}")
-            print(question_id,question_text,category)
+            print(question_id,question_text,category,unset_bit,new_state)
     
     def add_answer(self,card_id,question_id,answer):
         try:
@@ -285,6 +292,7 @@ class CardDb:
                 
     def populate_from_sources(self):
         try:
+
             #名前と読みの辞書を作成
             name_to_reading = {}
             for card in self.name_reading_json["cards"]:
@@ -293,8 +301,8 @@ class CardDb:
                 name_to_reading[card["name"]] = card["ruby"]
             
             # cards.cdb からすべてのカードを読み込む処理
-            self.cdbcursor.execute("SELECT id, name FROM texts;")
-            for card_id, card_name in self.cdbcursor.fetchall():
+            self.cdbcursor.execute("SELECT id, name,desc FROM texts;")
+            for card_id, card_name, card_desc in self.cdbcursor.fetchall():
                 self.cdbcursor.execute("SELECT setcode, type, atk, def, level, race, attribute FROM datas WHERE id = ?;",(card_id,))
                 card_data = self.cdbcursor.fetchone()
                 #読みを取得
@@ -303,15 +311,18 @@ class CardDb:
                 else:
                     #ないならNone
                     reading = None
-                self.add_card(card_id, card_name,reading,card_data[0],card_data[1],card_data[2],card_data[3],card_data[4],card_data[5],card_data[6])
-            
+                self.add_card(card_id, card_name,reading,card_desc,card_data[0],card_data[1],card_data[2],card_data[3],card_data[4],card_data[5],card_data[6])
+
             # script_to_question.json から質問を追加
             for question_text in self.script_json:
                 self.add_question(question_text, QuestionCategory.SCRIPT.value)
             
             # database_to_question.json から質問を追加
             for question_text in self.cards_json:
-                self.add_question(question_text, QuestionCategory.CARDS.value,self.cards_json[question_text])
+                if isinstance(self.cards_json[question_text],dict):
+                    self.add_question(question_text, QuestionCategory.CARDS.value,self.cards_json[question_text]["query"],self.cards_json[question_text]["unset_bit"],self.cards_json[question_text]["new_state"])
+                else:
+                    self.add_question(question_text, QuestionCategory.CARDS.value,self.cards_json[question_text])
 
         except Exception as e:
             print(f"cards.cdb 読み込みエラー: {e}")
@@ -320,10 +331,16 @@ class CardDb:
         self.conn.commit()
         self.cdbconn.commit()
         #閉じる
-        self.conn.close()
         self.cursor.close()
-        self.cdbconn.close()
+        self.conn.close()
         self.cdbcursor.close()
-        
-carddb = CardDb()
-carddb.populate_from_sources()
+        self.cdbconn.close()
+
+
+if __name__ == "__main__":
+    #データベースの生成
+    card_db = CardDb()
+    #cards.cdbからデータを読み込む
+    card_db.populate_from_sources()
+    #閉じる
+    card_db.close()

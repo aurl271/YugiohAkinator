@@ -20,8 +20,8 @@ def merge_databases(target_db, source_db, tables):
     #保存して終了
     conn.commit()
     cursor.execute("DETACH DATABASE src")
-    conn.close()
     cursor.close()
+    conn.close()
 
 #データベースへのパス
 current_dir = os.path.dirname(os.path.abspath(__file__))

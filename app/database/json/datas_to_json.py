@@ -26,50 +26,68 @@ def_values = [row[0] for row in cursor.fetchall()]
 #攻撃力が特定の値かどうかの質問の生成
 for atk in atk_values:
     if atk == -2:
-        print(f'    "攻撃力が?のモンスターですか？(魔法・罠ならいいえを選択)":[')
-        print(f'        "type & 1 != 0 AND atk = {atk}"')
-        print(f'    ],')
+        print(f'    "攻撃力が?のモンスターですか？(魔法・罠ならいいえを選択)":{{')
+        print(f'        "query":"type & 1 != 0 AND atk = {atk}",')
+        print(f'        "unset_bit":710,')
+        print(f'        "new_state":769')
+        print(f'    }},')
     else:
-        print(f'    "攻撃力が{atk}のモンスターですか？(魔法・罠ならいいえを選択)":[')
-        print(f'        "type & 1 != 0 AND atk = {atk}"')
-        print(f'    ],')
+        print(f'    "攻撃力が{atk}のモンスターですか？(魔法・罠ならいいえを選択)":{{')
+        print(f'        "query":"type & 1 != 0 AND atk = {atk}",')
+        print(f'        "unset_bit":710,')
+        print(f'        "new_state":769')
+        print(f'    }},')
 
 #範囲指定の質問   
 for i in range(0, 4501, 500):
-    print(f'    "攻撃力が{i}以上{i+500}以下のモンスターですか？(魔法・罠ならいいえを選択)":[')
-    print(f'        "type & 1 != 0 AND {i} <= atk AND atk <= {i+500}"')
-    print(f'    ],')
+    print(f'    "攻撃力が{i}以上{i+500}以下のモンスターですか？(魔法・罠ならいいえを選択)":{{')
+    print(f'        "query":"type & 1 != 0 AND {i} <= atk AND atk <= {i+500}",')
+    print(f'        "unset_bit":966,')
+    print(f'        "new_state":257')
+    print(f'    }},')
+
 
 
 #守備力が特定の値かどうかの質問の生成
 for defence in def_values:
     if defence == -2:
-        print(f'    "守備力が?のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":[')
-        print(f'        "type & 67108864 = 0 AND type & 1 != 0 AND def = {defence}"')
-        print(f'    ],')
+        print(f'    "守備力が?のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":{{')
+        print(f'        "query":"type & 67108864 = 0 AND type & 1 != 0 AND def = {defence}",')
+        print(f'        "unset_bit":2278,')
+        print(f'        "new_state":3073')
+        print(f'    }},')
     else:
-        print(f'    "守備力が{defence}のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":[')
-        print(f'        "type & 67108864 = 0 AND type & 1 != 0 AND def = {defence}"')
-        print(f'    ],')
+        print(f'    "守備力が{defence}のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":{{')
+        print(f'        "query":"type & 67108864 = 0 AND type & 1 != 0 AND def = {defence}",')
+        print(f'        "unset_bit":2278,')
+        print(f'        "new_state":3073')
+        print(f'    }},')
 
 #範囲指定の質問  
 for i in range(0, 4501, 500):
-    print(f'    "守備力が{i}以上{i+500}以下のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":[')
-    print(f'        "type & 67108864 = 0 AND type & 1 != 0 AND {i} <= def AND def <= {i+500}"')
-    print(f'    ],')
+    print(f'    "守備力が{i}以上{i+500}以下のモンスターですか？(リンクモンスター・魔法・罠ならいいえを選択)":{{')
+    print(f'        "query":"type & 67108864 = 0 AND type & 1 != 0 AND {i} <= def AND def <= {i+500}",')
+    print(f'        "unset_bit":3302,')
+    print(f'        "new_state":1025')
+    print(f'    }},')
+
 
 #レベルが特定の値かどうかの質問の生成
 for level in range(1,14):
-    print(f'    "レベル、ランク、リンクマーカーの数(未来龍王などはテキストに書いてあるレベル)が{level}のモンスターですか？(魔法・罠ならいいえを選択)":[')
-    print(f'        "type & 1 != 0 AND level & 0xff = {level}"')
-    print(f'    ],')
+    print(f'    "レベル、ランク、リンクマーカーの数(未来龍王などはテキストに書いてあるレベル)が{level}のモンスターですか？(魔法・罠ならいいえを選択)":{{')
+    print(f'        "query":"type & 1 != 0 AND level & 0xff = {level}",')
+    print(f'        "unset_bit":198,')
+    print(f'        "new_state":4097')
+    print(f'    }},')
 
 #スケールの質問
 for scale in range(14):
-    print(f'    "ペンデュラムスケールが{scale}のモンスターですか？(魔法・罠ならいいえを選択)":[')
-    print(f'        "type & 16777216 != 0 AND (level>>16)&0xff  = {scale}"')
-    print(f'    ],')
-
+    print(f'    "ペンデュラムスケールが{scale}のモンスターですか？(魔法・罠ならいいえを選択)":{{')
+    print(f'        "query":"type & 16777216 != 0 AND (level>>16)&0xff  = {scale}",')
+    print(f'        "unset_bit":198,')
+    print(f'        "new_state":24577')
+    print(f'    }},')
+"""
 #setcodeの取得
 cursor.execute("SELECT DISTINCT setcode FROM datas WHERE setcode != 0 ORDER BY setcode")
 setcode_values = [row[0] for row in cursor.fetchall()]
@@ -162,7 +180,7 @@ for category in category_names:
     
     query = f"    「{category[1]}」カード？(テキストにルール上「～」カードとして扱う場合も含む):" + query
     print(query)
-
+"""
 #閉じる
 cursor.close()
 conn.close()

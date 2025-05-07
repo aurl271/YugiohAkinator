@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+    <h1>アキネーター</h1>
+    {% if answer == "yes" %}
+        <p>やったぜ！</p>
+    {% elif answer == "no" %}
+        <p>失敗しました</p>
+    {% endif %}
+    <form action="/answer" method = "POST">
+        <button type="submit" name="play_again" value="yes">もう一回遊ぶ</button>
+    </form>
+    </body>
+</html>

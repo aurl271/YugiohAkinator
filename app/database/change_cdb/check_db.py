@@ -7,21 +7,21 @@ def check_db(db_path,table1,table2):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     #table1sテーブルとtable2テーブルのcardidを取得
-    cursor.execute("SELECT id FROM {table1}")
+    cursor.execute(f"SELECT id FROM {table1}")
     table1_ids_values = [row[0] for row in cursor.fetchall()]
-    cursor.execute("SELECT id FROM {table2}")
+    cursor.execute(f"SELECT id FROM {table2}")
     table2_ids_values = [row[0] for row in cursor.fetchall()]
 
     #片方にしかないのを削除
     for table1_id in table1_ids_values:
         if not table1_id in table2_ids_values:
             print(f"table1_id:{table1_id}")
-            cursor.execute("DELETE FROM {table1} WHERE id = ?",(table1_id,))
+            cursor.execute(f"DELETE FROM {table1} WHERE id = ?",(table1_id,))
             
     for table2_id in table2_ids_values:
         if not table2_id in table1_ids_values:
             print(f"table2_id:{table2_id}")
-            cursor.execute("DELETE FROM {table2} WHERE id = ?",(table2_id,))
+            cursor.execute(f"DELETE FROM {table2} WHERE id = ?",(table2_id,))
     
     #保存して終了
     conn.commit()

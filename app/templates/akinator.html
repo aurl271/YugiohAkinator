@@ -15,7 +15,21 @@
         <button type="submit" name="answer" value="probably">たぶんそう</button>
         <button type="submit" name="answer" value="probably_no">たぶん違う</button>
         <button type="submit" name="answer" value="no">いいえ</button>
-        <button type="submit" name="answer" value="dont_know">分からない</button>
+        <button type="submit" name="answer" value="unknown">分からない</button>
+        <button type="submit" name="answer" value="reset">リセット</button>
+        <button type="submit" name="answer" value="revert">戻す</button>
     </form>
+    <p>回答履歴</p>
+    {% if QA != None %}
+        <table border="1">
+            {% for row in QA %}
+            <tr>
+                {% for item in row %}
+                <td>{{ item }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
     </body>
 </html>

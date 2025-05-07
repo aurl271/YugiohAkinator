@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+    <h1>アキネーター</h1>
+    <p>あなたの考えたカードは{{ card }}ですか？</p>
+    <form action="/answer_check" method = "POST">
+        <button type="submit" name="answer" value="yes">はい</button>
+        <button type="submit" name="answer" value="no">違います</button>
+    </form>
+    </body>
+</html>
