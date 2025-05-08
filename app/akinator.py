@@ -17,7 +17,7 @@ class Akinator:
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
         
-        self.beta = 10
+        self.beta = 15
         self.percent = 0.99
         self.A = [-1, -0.5, 0, 0.5, 1]
         #回答した質問の種類を記録する変数
@@ -116,7 +116,7 @@ class Akinator:
         #質問を取得する関数
         
         #質問を取り出す
-        select_question_count = 100
+        select_question_count = 500
         self.cursor.execute("SELECT id,question_text,category,query,unset_bit FROM questions;")
         questions = {id: [question_text,category,query, unset_bit] for id, question_text, category, query, unset_bit in self.cursor.fetchall()}
         if not self.questions is None:
