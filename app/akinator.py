@@ -17,7 +17,7 @@ class Akinator:
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
         
-        self.beta = 12
+        self.beta = 10
         self.percent = 0.99
         self.A = [-1, -0.5, 0, 0.5, 1]
         #回答した質問の種類を記録する変数
@@ -49,14 +49,11 @@ class Akinator:
         self.card_count = len(self.index_id)
         
         self.H_i_n = np.zeros(self.card_count, dtype=np.float32)
-        self.prev_H_i_n = np.zeros(self.card_count, dtype=np.float32)
         
         for i in range(len(self.questions)):
             self.update_H_i_n(self.questions[i],self.answers[i])
-            if i == len(self.questions)-2:
-                self.prev_H_i_n += self.H_i_n
             
-        self.prev_H_i_n_sorted_index = np.argsort(self.prev_H_i_n)
+        self.H_i_n_sorted_index = np.argsort(self.H_i_n)
     
     def update_H_i_n(self,question,player_answer):
         # question_idを取得
@@ -168,7 +165,7 @@ class Akinator:
         #sum_i\exp\{-\beta(a-\alpha_{q,i})^2-\beta \mathcal{H}_{i,{n-1}}\}の計算
         #すべてのカードは重いので、上位1000件を選ぶ
         top_n = 1000
-        top_index = self.prev_H_i_n_sorted_index[:top_n]
+        top_index = self.H_i_n_sorted_index[:top_n]
         
         if yes_set is None:
             # YESとなるカードIDを取得し、set化（高速なO(1)参照のため）
@@ -182,7 +179,7 @@ class Akinator:
         alpha_values = np.array([AnswerValue.YES.value if cid in yes_set else AnswerValue.NO.value for cid in top_index], dtype=np.float32)
         
         # H_i_{n-1} を取得（top_indices に対応する H の値）
-        H_values = self.prev_H_i_n[top_index]
+        H_values = self.H_i_n[top_index]
 
         # 数式を NumPy ブロードキャストで計算
         diffs = answer - alpha_values
@@ -211,10 +208,6 @@ class Akinator:
     def get_state(self):
         #stateを取得する関数
         return self.state
-    
-    def get_prev_H_i_n(self):
-        #prev_H_i_nを取得する関数
-        return self.prev_H_i_n.tolist()
 
 if __name__ == "__main__":
     akinator = Akinator()
