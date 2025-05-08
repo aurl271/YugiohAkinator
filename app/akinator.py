@@ -106,15 +106,14 @@ class Akinator:
         max_index = np.argmax(exp_values)
         max_p = exp_values[max_index] / denominator
         
+        self.cursor.execute("SELECT name FROM cards WHERE card_id = ?;", (self.index_id[max_index],))
+        card_name = self.cursor.fetchone()
+        if card_name:
+            card_name = card_name[0]
         if max_p > self.percent:
-            self.cursor.execute("SELECT name FROM cards WHERE card_id = ?;", (self.index_id[max_index],))
-            card_name = self.cursor.fetchone()
-            if card_name:
-                return card_name[0]
-            else:
-                return None
+            return True,card_name
         else:
-            return None
+            return False,card_name
     
     def get_question(self):
         #質問を取得する関数

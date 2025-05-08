@@ -1,13 +1,30 @@
 <!DOCTYPE html>
-<html>
-    <head>
-    </head>
-    <body>
-    <h1>アキネーター</h1>
-    <p>あなたの考えたカードは{{ card }}ですか？</p>
-    <form action="/answer_check" method = "POST">
-        <button type="submit" name="answer" value="yes">はい</button>
-        <button type="submit" name="answer" value="no">違います</button>
-    </form>
-    </body>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カードの予想</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5 text-center">
+    <h1 class="mb-4">アキネーター</h1>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+      <div class="card-body">
+        <p class="fs-5">あなたの考えたカードは</p>
+        <h2 class="text-primary mb-4">{{ card }}</h2>
+        <p class="fs-5">ですか？</p>
+
+        <form action="/answer_check" method="POST">
+          <div class="d-flex justify-content-center gap-3 mt-4">
+            <button type="submit" name="answer" value="yes" class="btn btn-success">はい</button>
+            <button type="submit" name="answer" value="no" class="btn btn-danger">違います</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
