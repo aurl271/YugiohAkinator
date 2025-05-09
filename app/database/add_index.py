@@ -17,3 +17,6 @@ cursor.execute("CREATE INDEX index_level ON cards(level);")
 cursor.execute("CREATE INDEX index_race ON cards(race);")
 cursor.execute("CREATE INDEX index_attribute ON cards(attribute);")
 cursor.execute("CREATE INDEX index_question_id ON answers(question_id);")
+
+cursor.close()
+conn.close()

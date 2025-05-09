@@ -24,7 +24,7 @@ def question_page():
         
         session["question"] = questions
 
-        return render_template("akinator.html",question=question,QA = None,card = None)
+        return render_template("akinator.html",question=question,QA = None,cards = None)
     
     elif request.method == 'POST':
         #回答の取得
@@ -63,8 +63,15 @@ def question_page():
             QA = []
             for i in range(len(answers)):
                 QA.append((questions[i],value_answer[answers[i]]))
+                
+            #アキネーターのインスタンスを生成
+            akinator = Akinator(questions,answers)
+            #上位のカードを取得(順位,カード名,確率)
+            is_answer,cards = akinator.get_card()
+            if is_answer:
+                return redirect(url_for("app.answer_check_page",card=cards[0][1]))
             
-            return render_template("akinator.html",question=question,QA = QA)
+            return render_template("akinator.html",question=question,QA = QA,cards = cards)
 
         else:
             #リセット
@@ -77,9 +84,10 @@ def question_page():
         #アキネーターのインスタンスを生成
         akinator = Akinator(questions,answers)
         
-        is_answer,card = akinator.get_card()
+        #上位のカードを取得(順位,カード名,確率)
+        is_answer,cards = akinator.get_card()
         if is_answer:
-            return redirect(url_for("app.answer_check_page",card=card))
+            return redirect(url_for("app.answer_check_page",card=cards[0][1]))
         
         #質問の取得
         question = akinator.get_question()
@@ -93,7 +101,7 @@ def question_page():
         for i in range(len(answers)):
             QA.append((questions[i],value_answer[answers[i]]))
         
-        return render_template("akinator.html",question=question,QA = QA,card = card)
+        return render_template("akinator.html",question=question,QA = QA,cards = cards)
 
 @app.route("/answer_check",methods=['GET','POST'])
 def answer_check_page():

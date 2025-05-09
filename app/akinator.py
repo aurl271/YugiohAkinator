@@ -52,7 +52,7 @@ class Akinator:
         
         self.H_i_n = np.zeros(self.card_count, dtype=np.float32)
         
-        for i in range(len(self.questions)):
+        for i in range(min(len(self.questions),len(self.answers))):
             self.update_H_i_n(self.questions[i],self.answers[i])
             
         self.H_i_n_sorted_index = np.argsort(self.H_i_n)
@@ -73,18 +73,10 @@ class Akinator:
         elif category == QuestionCategory.CARDS.value:
             self.cursor.execute(f"SELECT card_id FROM cards WHERE {query};")
             yes_set = set(self.id_index[card_id[0]] for card_id in self.cursor.fetchall())
-
-        # NumPy化された index_id を作成
-        index_ids = np.array(list(self.index_id))
-
-        # yes_set に含まれるかどうかのマスクを作成
-        yes_mask = np.isin(index_ids, list(yes_set))
-
-        # YES/NOの値をベクトルとして作成
-        answers = np.where(yes_mask, AnswerValue.YES.value, AnswerValue.NO.value).astype(np.float32)
         
         player_answers = np.full(self.card_count,player_answer).astype(np.float32)
-        
+        answers = np.array([AnswerValue.YES.value if card_index in yes_set else AnswerValue.NO.value for card_index in range(self.card_count)], dtype=np.float32)
+
         # H_i_nをベクトル演算で更新
         self.H_i_n += (player_answers - answers) ** 2
             
@@ -101,18 +93,26 @@ class Akinator:
         #カードの確率を計算
         exp_values = np.exp(-self.beta * self.H_i_n)
         denominator = np.sum(exp_values)
-            
-        max_index = np.argmax(exp_values)
-        max_p = exp_values[max_index] / denominator
+                    
+        # 値が大きい順のインデックス（降順）
+        sorted_index = np.argsort(-exp_values)
+
+        # 上位10個のインデックス
+        top_indexs = sorted_index[:5]
         
-        self.cursor.execute("SELECT name FROM cards WHERE card_id = ?;", (self.index_id[max_index],))
-        card_name = self.cursor.fetchone()
-        if card_name:
-            card_name = card_name[0]
-        if max_p > self.percent and len(self.questions) >= 17:
-            return True,card_name
+        cards = []
+        
+        for i in range(len(top_indexs)):
+            self.cursor.execute("SELECT name FROM cards WHERE card_id = ?;", (self.index_id[top_indexs[i]],))
+            card_name = self.cursor.fetchone()
+            if card_name:
+                cards.append((str(i+1)+"位",card_name[0],float(exp_values[top_indexs[i]] / denominator)))
+                
+        max_p = exp_values[top_indexs[0]] / denominator
+        if max_p > self.percent:
+            return True,cards
         else:
-            return False,card_name
+            return False,cards
     
     def get_question(self):
         #質問を取得する関数
@@ -122,9 +122,13 @@ class Akinator:
         if len(self.questions) < 3:
             select_question_count = 100
         elif len(self.questions)  < 6:
-            select_question_count = 300
+            select_question_count = 150
+        elif len(self.questions)  < 9:
+            select_question_count = 200
+        elif len(self.questions)  < 12:
+            select_question_count = 150
         else:
-            select_question_count = 500
+            select_question_count = 100
             
         self.cursor.execute("SELECT id,question_text,category,query,unset_bit FROM questions;")
         questions = {id: [question_text,category,query, unset_bit] for id, question_text, category, query, unset_bit in self.cursor.fetchall()}
@@ -184,7 +188,7 @@ class Akinator:
             
             start = time.time()
             
-            alpha_values = np.array([AnswerValue.YES.value if cid in yes_set else AnswerValue.NO.value for cid in top_index], dtype=np.float32)
+            alpha_values = np.array([AnswerValue.YES.value if card_index in yes_set else AnswerValue.NO.value for card_index in top_index], dtype=np.float32)
             p = np.array([self.calculate_expression(self.A[i], H_values, alpha_values) for i in range(len(self.A))], dtype=np.float32)
             entropy = self.shannon_entropy(p)
             

@@ -1,84 +1,104 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>遊戯王アキネーター</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  	<meta charset="UTF-8">
+  	<title>遊戯王アキネーター</title>
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<!-- Bootstrap -->
+  	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container mt-5">
-    <h1 class="text-center mb-3">遊戯王アキネーター</h1>
-    <div class="text-center mt-1 text-muted small">
-        <p class="text-center">まだ試作段階で計算にすごく時間がかかります。精度もまだまだ結構ガバイです。<br>
-        似たような形式の質問が多くなってしまってます。「テキストに「～」を含む」は部分一致で判定します。</p>
+  	<div class="container mt-5">
+    	<h1 class="text-center mb-3">遊戯王アキネーター</h1>
+    	<div class="text-center mt-1 text-muted small">
+        	<p class="text-center">まだ試作段階で計算にすごく時間がかかります。精度もまだまだ結構ガバイです。<br>
+        	似たような形式の質問が多くなってしまってます。「テキストに「～」を含む」は部分一致で判定します。</p>
         
-    </div>
+   		</div>
     
-    <div class="text-center mb-4">
-      <img src="{{ url_for('static', filename='images/lamp_majin.png') }}" alt="魔人" class="img-fluid" style="max-height: 200px;">
-    </div>
+    	<div class="text-center mb-4">
+      		<img src="{{ url_for('static', filename='images/lamp_majin.png') }}" alt="魔人" class="img-fluid" style="max-height: 200px;">
+    	</div>
     
-    <div class="card mb-4">
-      <div class="card-body">
-        <h5 class="card-title">質問</h5>
-        {% if question == None %}
-          <p class="text-muted">質問がまだありません。</p>
-        {% else %}
-          <p class="fs-5">{{ question }}</p>
-        {% endif %}
-      </div>
-    </div>
+    	<div class="card mb-4">
+    		<div class="card-body">
+        		<h5 class="card-title">質問</h5>
+				{% if question == None %}
+					<p class="text-muted">質問がまだありません。</p>
+				{% else %}
+					<p class="fs-5">{{ question }}</p>
+				{% endif %}
+			</div>
+		</div>
 
-    <!-- 🔄 ローディングスピナー（初期は非表示） -->
-    <div id="loading" class="text-center mb-4" style="display: none;">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p class="mt-2">計算中です。お待ちください...</p>
-    </div>
+		<!-- 🔄 ローディングスピナー（初期は非表示） -->
+		<div id="loading" class="text-center mb-4" style="display: none;">
+			<div class="spinner-border text-primary" role="status"></div>
+			<p class="mt-2">計算中です。お待ちください...</p>
+		</div>
 
-    <!-- フォーム -->
-    <form id="questionForm" action="/" method="POST" class="mb-4 text-center">
-      <div class="btn-group" role="group">
-        <button type="submit" name="answer" value="yes" class="btn btn-success">はい</button>
-        <button type="submit" name="answer" value="probably" class="btn btn-outline-success">たぶんそう</button>
-        <button type="submit" name="answer" value="probably_no" class="btn btn-outline-warning">たぶん違う</button>
-        <button type="submit" name="answer" value="no" class="btn btn-danger">いいえ</button>
-        <button type="submit" name="answer" value="unknown" class="btn btn-secondary">分からない</button>
-      </div>
-      <div class="mt-3">
-        <button type="submit" name="answer" value="reset" class="btn btn-outline-secondary">リセット</button>
-        <button type="submit" name="answer" value="revert" class="btn btn-outline-primary">戻る</button>
-      </div>
-    </form>
+		<!-- フォーム -->
+		<form id="questionForm" action="/" method="POST" class="mb-4 text-center">
+			<div class="btn-group" role="group">
+				<button type="submit" name="answer" value="yes" class="btn btn-success">はい</button>
+				<button type="submit" name="answer" value="probably" class="btn btn-outline-success">たぶんそう</button>
+				<button type="submit" name="answer" value="probably_no" class="btn btn-outline-warning">たぶん違う</button>
+				<button type="submit" name="answer" value="no" class="btn btn-danger">いいえ</button>
+				<button type="submit" name="answer" value="unknown" class="btn btn-secondary">分からない</button>
+			</div>
+			<div class="mt-3">
+				<button type="submit" name="answer" value="reset" class="btn btn-outline-secondary">リセット</button>
+				<button type="submit" name="answer" value="revert" class="btn btn-outline-primary">戻る</button>
+			</div>
+		</form>
 
     <!-- 答えの候補 -->
-      {% if card != None %}
-      <p class="fs-5">答えの候補:{{ card }}</p>
+    {% if cards != None %}
+		<div class="table-responsive">
+			<h4>答えの候補</h4>
+			<table class="table table-bordered table-striped">
+			<thead class="table-light">
+				<tr>
+					<th>順位</th>
+					<th>カード名</th>
+					<th>確率</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for row in cards %}
+					<tr>
+						{% for item in row %}
+							<td>{{ item }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
     {% endif %}
 
     <!-- 回答履歴 -->
     {% if QA != None %}
-    <div class="table-responsive">
-      <h4>回答履歴</h4>
-      <table class="table table-bordered table-striped">
-        <thead class="table-light">
-          <tr>
-            <th>質問</th>
-            <th>回答</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in QA %}
-          <tr>
-            {% for item in row %}
-            <td>{{ item }}</td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+		<div class="table-responsive">
+			<h4>回答履歴</h4>
+			<table class="table table-bordered table-striped">
+			<thead class="table-light">
+				<tr>
+					<th>質問</th>
+					<th>回答</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in QA %}
+					<tr>
+						{% for item in row %}
+							<td>{{ item }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
     {% endif %}
     <div class="text-center mt-5 text-muted small">
         <p>イラスト：<a href="https://www.irasutoya.com/" target="_blank" rel="noopener">いらすとや</a></p>
