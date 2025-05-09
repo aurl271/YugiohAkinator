@@ -1,20 +1,18 @@
-# 1. ベースイメージを指定（ここではPython 3.9のスリムなイメージ）
+# 1. Pythonのベースイメージ
 FROM python:latest
 
-# 2. 作業ディレクトリを作成し、そのディレクトリを指定
+# 2. 作業ディレクトリを設定
 WORKDIR /app
 
-# 3. requirements.txtをコンテナ内にコピーして、依存関係をインストール
+# 3. requirements をコピーしてインストール
 COPY requirements.txt /app/
-
-# 4. Flaskアプリケーションの依存ライブラリをインストール
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. アプリケーションのソースコードをコンテナ内にコピー
+# 4. アプリ本体をコピー
 COPY . /app/
 
-# 6. コンテナのポート5000番を公開（Flaskのデフォルトポート）
+# 5. ポートを公開（Render向け）
 EXPOSE 5000
 
-# 7. アプリケーションを起動（Flaskの場合）
-CMD ["python", "run.py"]
+# 6. gunicornでFlaskアプリを起動
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "run:app"]

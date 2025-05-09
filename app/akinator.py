@@ -120,15 +120,15 @@ class Akinator:
         #すべての質問は重いので、ランダムを選ぶ
         #終盤になればなるほど、重要な質問を選びたいので多く選ぶ
         if len(self.questions) < 3:
-            select_question_count = 100
+            select_question_count = 50
         elif len(self.questions)  < 6:
-            select_question_count = 150
+            select_question_count = 75
         elif len(self.questions)  < 9:
-            select_question_count = 200
-        elif len(self.questions)  < 12:
-            select_question_count = 150
-        else:
             select_question_count = 100
+        elif len(self.questions)  < 12:
+            select_question_count = 75
+        else:
+            select_question_count = 50
             
         self.cursor.execute("SELECT id,question_text,category,query,unset_bit FROM questions;")
         questions = {id: [question_text,category,query, unset_bit] for id, question_text, category, query, unset_bit in self.cursor.fetchall()}
