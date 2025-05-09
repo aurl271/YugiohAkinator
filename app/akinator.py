@@ -6,6 +6,8 @@ import os
 import numpy as np
 #質問の形式を得るためにインポート
 from app.database.generate_database import QuestionCategory, AnswerValue
+#時間を計測するためにインポート
+import time
 
 class Akinator:
     #アキネータークラス
@@ -107,7 +109,7 @@ class Akinator:
         card_name = self.cursor.fetchone()
         if card_name:
             card_name = card_name[0]
-        if max_p > self.percent:
+        if max_p > self.percent and len(self.questions) >= 17:
             return True,card_name
         else:
             return False,card_name
@@ -115,8 +117,15 @@ class Akinator:
     def get_question(self):
         #質問を取得する関数
         
-        #質問を取り出す
-        select_question_count = 500
+        #すべての質問は重いので、ランダムを選ぶ
+        #終盤になればなるほど、重要な質問を選びたいので多く選ぶ
+        if len(self.questions) < 3:
+            select_question_count = 100
+        elif len(self.questions)  < 6:
+            select_question_count = 300
+        else:
+            select_question_count = 500
+            
         self.cursor.execute("SELECT id,question_text,category,query,unset_bit FROM questions;")
         questions = {id: [question_text,category,query, unset_bit] for id, question_text, category, query, unset_bit in self.cursor.fetchall()}
         if not self.questions is None:
@@ -140,7 +149,28 @@ class Akinator:
         #相互情報量が多い質問を選ぶ
         max_question_id = -1
         max_entropy = float('-inf')
-        for question_id in question_ids:        
+        
+        yes_set_time = 0.0
+        entropy_time = 0.0
+        
+        #すべてのカードは重いので、上位だけを選ぶ
+        #終盤になればなるほど、上位のカードだけを選ぶ
+        if len(self.questions) < 3:
+            top_n = 3000
+        elif len(self.questions)  < 6:
+            top_n = 2000
+        elif len(self.questions)  < 9:
+            top_n = 1000
+        else:
+            top_n = 500
+        top_index = self.H_i_n_sorted_index[:top_n]
+        # H_i_{n-1} を取得（top_indices に対応する H の値）
+        H_values = self.H_i_n[top_index]
+        
+        for question_id in question_ids:
+            
+            start = time.time()
+            
             # YESとなるカードIDを取得し、set化（高速なO(1)参照のため）
             if questions[question_id][1] == QuestionCategory.SCRIPT.value:
                 self.cursor.execute("SELECT card_id FROM answers WHERE question_id = ?;", (question_id,))
@@ -148,39 +178,31 @@ class Akinator:
             elif questions[question_id][1] == QuestionCategory.CARDS.value:
                 self.cursor.execute(f"SELECT card_id FROM cards WHERE {questions[question_id][2]};")
                 yes_set = set(self.id_index[card_id[0]] for card_id in self.cursor.fetchall())
-                
-            p = np.zeros(len(self.A), dtype=np.float32)
-            for i in range(len(self.A)):
-                p[i] = self.calculate_expression(self.A[i],question_id,questions[question_id][1],questions[question_id][2],yes_set = yes_set)
+            
+            end = time.time()
+            yes_set_time += end - start
+            
+            start = time.time()
+            
+            alpha_values = np.array([AnswerValue.YES.value if cid in yes_set else AnswerValue.NO.value for cid in top_index], dtype=np.float32)
+            p = np.array([self.calculate_expression(self.A[i], H_values, alpha_values) for i in range(len(self.A))], dtype=np.float32)
             entropy = self.shannon_entropy(p)
+            
+            end = time.time()
+            entropy_time += end - start
             
             if max_entropy < entropy:
                 max_entropy = entropy
                 max_question_id = question_id
+                
+        print("yes_set_time:", yes_set_time)
+        print("entropy_time:", entropy_time)
         
         #質問を返す
         return questions[max_question_id][0]
     
-    def calculate_expression(self,answer,question_id,category,query = None,yes_set = None):
-        #sum_i\exp\{-\beta(a-\alpha_{q,i})^2-\beta \mathcal{H}_{i,{n-1}}\}の計算
-        #すべてのカードは重いので、上位1000件を選ぶ
-        top_n = 1000
-        top_index = self.H_i_n_sorted_index[:top_n]
-        
-        if yes_set is None:
-            # YESとなるカードIDを取得し、set化（高速なO(1)参照のため）
-            if category == QuestionCategory.SCRIPT.value:
-                self.cursor.execute("SELECT card_id FROM answers WHERE question_id = ?;", (question_id,))
-                yes_set = set(self.id_index[card_id[0]] for card_id in self.cursor.fetchall())
-            elif category == QuestionCategory.CARDS.value:
-                self.cursor.execute(f"SELECT card_id FROM cards WHERE {query};")
-                yes_set = set(self.id_index[card_id[0]] for card_id in self.cursor.fetchall())
-        
-        alpha_values = np.array([AnswerValue.YES.value if cid in yes_set else AnswerValue.NO.value for cid in top_index], dtype=np.float32)
-        
-        # H_i_{n-1} を取得（top_indices に対応する H の値）
-        H_values = self.H_i_n[top_index]
-
+    def calculate_expression(self,answer,H_values,alpha_values):
+        #sum_i\exp\{-\beta(a-\alpha_{q,i})^2-\beta \mathcal{H}_{i,{n-1}}\}の計算    
         # 数式を NumPy ブロードキャストで計算
         diffs = answer - alpha_values
         exponent = -self.beta * (diffs ** 2 + H_values)
@@ -223,8 +245,8 @@ if __name__ == "__main__":
         answers = akinator.answers
         
         akinator = Akinator(questions,answers)
-        card = akinator.get_card()
-        if card is not None:
+        is_end,card = akinator.get_card()
+        if is_end:
             print(card)
             break
         question = akinator.get_question()

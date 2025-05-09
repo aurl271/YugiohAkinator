@@ -9,8 +9,12 @@
 </head>
 <body>
   <div class="container mt-5">
-    <h1 class="text-center mb-4">遊戯王アキネーター</h1>
-    <p class="text-center">まだ試作段階で計算にすごく時間がかかります。似たような形式の質問が多くなってしまってます。</p>
+    <h1 class="text-center mb-3">遊戯王アキネーター</h1>
+    <div class="text-center mt-1 text-muted small">
+        <p class="text-center">まだ試作段階で計算にすごく時間がかかります。精度もまだまだ結構ガバイです。<br>
+        似たような形式の質問が多くなってしまってます。「テキストに「～」を含む」は部分一致で判定します。</p>
+        
+    </div>
     
     <div class="text-center mb-4">
       <img src="{{ url_for('static', filename='images/lamp_majin.png') }}" alt="魔人" class="img-fluid" style="max-height: 200px;">
@@ -79,8 +83,9 @@
     <div class="text-center mt-5 text-muted small">
         <p>イラスト：<a href="https://www.irasutoya.com/" target="_blank" rel="noopener">いらすとや</a></p>
         <p>アキネーターのロジックを参考にしました：<a href="https://qiita.com/tsukemono/items/2a18e5d307a978e8ab09" target="_blank" rel="noopener">Qiita</a></p>
-        <a href="https://www.db.yugioh-card.com/yugiohdb/card_search.action" target="_blank" rel="noopener">遊戯王カードデータベース</a>
-    </div>      
+        <p><a href="https://www.db.yugioh-card.com/yugiohdb/card_search.action" target="_blank" rel="noopener">遊戯王カードデータベース</a></p>
+        <p>Webアプリは初めて作ったので、もし改善点などがあれば教えていただけると嬉しいです:<a href="https://x.com/Nobu27182" target="_blank" rel="noopener">作成者</a></p>
+      </div>      
     </div>
 
     <!-- JavaScriptでローディング表示 -->
