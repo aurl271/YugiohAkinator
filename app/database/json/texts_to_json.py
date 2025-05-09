@@ -24,7 +24,7 @@ with open(db_path, 'r', encoding='utf-8') as f:
         
 for char in first:
     #queryを出力
-    print(f'    "カード名の【読み】が「{char}」で始まるカードですか？(公式データベースに準拠 大文字、小文字は区別するが全角、半角は区別しない 例:“罪宝狩りの悪魔“は「“」で始まる)":{{')
+    print(f'    "カード名の読みが「{char}」で始まるカードですか？読み(公式データベースに準拠 大文字、小文字、ひらがな、カタカナは区別するが全角、半角は区別しない)":{{')
     print(f'        "query":"reading LIKE \'{char}%\'",')
     print(f'        "unset_bit":131072,')
     print(f'        "new_state":131072')
@@ -33,7 +33,7 @@ for char in first:
 
 for char in last:
     #queryを出力
-    print(f'    "カード名の【読み】が「{char}」で終わるカードですか？(公式データベースに準拠 大文字、小文字は区別するが全角、半角は区別しない 例:驚楽園の助手 ＜Delia＞は「＞」で終わる)":{{')
+    print(f'    "カード名の読みが「{char}」で終わるカードですか？読み(公式データベースに準拠 大文字、小文字、ひらがな、カタカナは区別するが全角、半角は区別しない)":{{')
     print(f'        "query":"reading LIKE \'%{char}\'",')
     print(f'        "unset_bit":131072,')
     print(f'        "new_state":131072')
