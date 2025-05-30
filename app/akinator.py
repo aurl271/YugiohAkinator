@@ -11,7 +11,7 @@ import time
 
 class Akinator:
     #アキネータークラス
-    def __init__(self,questions : list[str] = None, answers : list[int] = None):
+    def __init__(self,questions : list[str] = None, answers : list[int] = None, hyper_parameter = 15):
         
         current_dir = os.path.dirname(os.path.abspath(__file__))
         db_path = os.path.join(current_dir, 'database', 'CQA.db')
@@ -19,9 +19,13 @@ class Akinator:
         self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
         
-        self.beta = 15
-        self.percent = 0.99
+        self.beta = float(hyper_parameter)
+        self.percent = 0.8
+        self.second_percent = 0.5
         self.A = [-1, -0.5, 0, 0.5, 1]
+        #カードのエントロピー(とりあえず初期値はバカでかく)
+        self.card_entropy = 1000
+        
         #回答した質問の種類を記録する変数
         
         self.questions = questions
@@ -93,15 +97,18 @@ class Akinator:
         #カードの確率を計算
         exp_values = np.exp(-self.beta * self.H_i_n)
         denominator = np.sum(exp_values)
+        
+        p = exp_values/denominator
+        self.card_entropy = self.shannon_entropy(p)
                     
         # 値が大きい順のインデックス（降順）
         sorted_index = np.argsort(-exp_values)
 
-        # 上位10個のインデックス
+        # 上位5個のインデックス
         top_indexs = sorted_index[:5]
         
         cards = []
-        
+
         for i in range(len(top_indexs)):
             self.cursor.execute("SELECT name FROM cards WHERE card_id = ?;", (self.index_id[top_indexs[i]],))
             card_name = self.cursor.fetchone()
@@ -109,7 +116,9 @@ class Akinator:
                 cards.append((str(i+1)+"位",card_name[0],float(exp_values[top_indexs[i]] / denominator)))
                 
         max_p = exp_values[top_indexs[0]] / denominator
-        if max_p > self.percent:
+        second_p = exp_values[top_indexs[1]] / denominator
+        #一番確率が大きいカードの確率が一定以上または、2番目に比べて大きく閾値を超えていたらカードを確定
+        if max_p > self.percent or (max_p > self.second_percent and max_p/second_p >= 2):
             return True,cards
         else:
             return False,cards
@@ -119,13 +128,13 @@ class Akinator:
         
         #すべての質問は重いので、ランダムを選ぶ
         #終盤になればなるほど、重要な質問を選びたいので多く選ぶ
-        if len(self.questions) < 3:
+        if self.card_entropy >= 11:
             select_question_count = 50
-        elif len(self.questions)  < 6:
+        elif self.card_entropy >= 8:
             select_question_count = 75
-        elif len(self.questions)  < 9:
+        elif self.card_entropy >= 6:
             select_question_count = 100
-        elif len(self.questions)  < 12:
+        elif self.card_entropy >= 4:
             select_question_count = 75
         else:
             select_question_count = 50
@@ -158,15 +167,16 @@ class Akinator:
         entropy_time = 0.0
         
         #すべてのカードは重いので、上位だけを選ぶ
-        #終盤になればなるほど、上位のカードだけを選ぶ
-        if len(self.questions) < 3:
+        #終盤になればなるほど、上位のカードだけを選ぶ            
+        if self.card_entropy >= 11:
             top_n = 3000
-        elif len(self.questions)  < 6:
+        elif self.card_entropy >= 8:
             top_n = 2000
-        elif len(self.questions)  < 9:
+        elif self.card_entropy >= 6:
             top_n = 1000
         else:
             top_n = 500
+            
         top_index = self.H_i_n_sorted_index[:top_n]
         # H_i_{n-1} を取得（top_indices に対応する H の値）
         H_values = self.H_i_n[top_index]

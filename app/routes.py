@@ -9,13 +9,24 @@ answer_value = {"yes":AnswerValue.YES.value,"probably":AnswerValue.PROBABLY.valu
 value_answer = {AnswerValue.YES.value:"はい",AnswerValue.PROBABLY.value:"たぶんそう",AnswerValue.NO.value:"いいえ",AnswerValue.PROBABLY_NO.value:"たぶん違う",AnswerValue.UNKNOWN.value:"分からない"}
 
 @app.route("/",methods=['GET','POST'])
+def select_mode():
+    if request.method == 'GET':
+        return render_template("mode_select.html")
+    elif request.method == 'POST':
+        hyper_parameter = request.form.get("hyper_parameter")
+        session["hyper_parameter"] = hyper_parameter
+        return redirect(url_for("app.question_page"))
+        
+@app.route("/akinator",methods=['GET','POST'])
 def question_page():
     if request.method == 'GET':
         #セッションの初期化
+        hyper_parameter = session.get("hyper_parameter", 15)
         session.clear()
+        session["hyper_parameter"] = hyper_parameter
 
         #アキネーターのインスタンスを生成
-        akinator = Akinator()
+        akinator = Akinator(hyper_parameter=hyper_parameter)
 
         #質問を取得
         question = akinator.get_question()
@@ -33,9 +44,10 @@ def question_page():
         #今までの回答を取得
         answers = session.get("answer", [])
         
-        #今までの質問を取得
+        #今までの質問を取得 
         questions = session.get("question", [])
         
+        hyper_parameter = session.get("hyper_parameter", 15)
         if answer in answer_value:
             #回答の取得
             answer = answer_value[answer]
@@ -43,12 +55,14 @@ def question_page():
         elif answer == "reset":
             #リセット
             session.clear()
+            session["hyper_parameter"] = hyper_parameter
             return redirect(url_for("app.question_page"))
         
         elif answer == "revert":
             if not answers:
                 #リセット
                 session.clear()
+                session["hyper_parameter"] = hyper_parameter
                 return redirect(url_for("app.question_page"))
             answers.pop()
             session["answer"] = answers
@@ -56,6 +70,7 @@ def question_page():
             if len(questions) < 2:
                 #リセット
                 session.clear()
+                session["hyper_parameter"] = hyper_parameter
                 return redirect(url_for("app.question_page"))
             questions.pop()
             question = questions[-1]
@@ -65,7 +80,7 @@ def question_page():
                 QA.append((questions[i],value_answer[answers[i]]))
                 
             #アキネーターのインスタンスを生成
-            akinator = Akinator(questions,answers)
+            akinator = Akinator(questions,answers,hyper_parameter=hyper_parameter)
             #上位のカードを取得(順位,カード名,確率)
             is_answer,cards = akinator.get_card()
             if is_answer:
@@ -76,13 +91,14 @@ def question_page():
         else:
             #リセット
             session.clear()
+            session["hyper_parameter"] = hyper_parameter
             return redirect(url_for("app.question_page"))
 
         #回答の追加
         answers.append(answer)
         
         #アキネーターのインスタンスを生成
-        akinator = Akinator(questions,answers)
+        akinator = Akinator(questions,answers,hyper_parameter=hyper_parameter)
         
         #上位のカードを取得(順位,カード名,確率)
         is_answer,cards = akinator.get_card()
@@ -119,6 +135,8 @@ def answer_check_page():
         elif answer == "no":
             #不正解
             return redirect(url_for("app.answer_page",answer=answer))
+        
+    return redirect(url_for("app.question_page"))
 
 @app.route("/answer",methods=['GET','POST'])
 def answer_page():
@@ -133,4 +151,4 @@ def answer_page():
         if play_again == "yes":
             #リセット
             session.clear()
-            return redirect(url_for("app.question_page"))
+            return redirect(url_for("app.select_mode"))
